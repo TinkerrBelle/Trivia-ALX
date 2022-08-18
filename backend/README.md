@@ -102,3 +102,322 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+
+
+
+
+
+## API Reference
+________________________________________________________________________
+
+## Getting Started
+
+* Base URL: At present this app can only be runlocally and is not hosted as a base URL. The backend app is hosted at the default, http://127.0.0.1:5000/ , which is set as a proxy in the frontend configuration.
+
+* Authentication: This version of the application does not require authentication or API keys.
+
+
+## Error Handling
+
+Errors are returned as JSON objects in the following format:
+
+{
+    'success': False,
+    'error': 422,
+    'message': 'unprocessable'
+}
+
+The API will return three error type when request fail:
+  * 500: error loading question
+  * 404: resource not found
+  * 405: method not allowed
+  * 422: unprocessable
+
+
+## Endpoints
+* **GET /categories**
+  * General:
+    * Returna a list of categories objects and success value.
+
+    * Sample: curl http://127.0.0.1:5000/categories
+
+    'categories': [
+        {
+            '1': 'Science',
+            '2': 'Art',
+            '3': 'Geography',
+            '4': 'History',
+            '5': 'Entertainment,
+            '6': 'Sports'
+        },
+    ],
+'success': true,
+
+
+* **GET /questions**
+  * General:
+    * Returns a list of questions objects including pagination (every 10 questions), success value, and total number of questions, current category, categories.
+    * Results are paginated in groups of 10, include a request to choose page number, starting from 1.
+
+    * Sample: curl http://127.0.0.1:5000/questions
+
+    {
+      "categories":
+      {
+        "1":"Science",
+        "2":"Art",
+        "3":"Geography",
+        "4":"History",
+        "5":"Entertainment",
+        "6":"Sports"
+      },
+
+      "questions":[
+        {
+          "answer":"Apollo 13",
+          "category":"5",
+          "difficulty":4,
+          "id":2,
+          "question":"What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+        },
+        {
+          "answer":"Tom Cruise",
+          "category":"5",
+          "difficulty":4,
+          "id":4,
+          "question":"What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+        },
+        {
+          "answer":"Maya Angelou",
+          "category":"4",
+          "difficulty":2,
+          "id":5,
+          "question":"Whose autobiography is entitled \"I Know Why the Caged Bird Sings\"?"
+        },
+        {
+          "answer":"Muhammad Ali",
+          "category":"4",
+          "difficulty":1,
+          "id":6,
+          "question":"What boxers original name is Cassius Clay?"
+        },
+        {
+          "answer":"Edward Scissorhands",
+          "category":"5",
+          "difficulty":3,
+          "id":9,
+          "question":"What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+        },
+        {
+          "answer":"Brazil",
+          "category":"6",
+          "difficulty":3,
+          "id":10,
+          "question":"Which is the only team to play in every soccer World Cup tournament?"
+        },
+        {
+          "answer":"Uruguay",
+          "category":"6",
+          "difficulty":4,
+          "id":11,
+          "question":"Which country won the first ever soccer World Cup in 1930?"
+        },
+        {
+          "answer":"George Washington Carver ",
+          "category":"4",
+          "difficulty":2,
+          "id":12,
+          "question":"Who invented Peanut Butter?"
+        },
+        {
+          "answer":"Lake Victoria",
+          "category":"3",
+          "difficulty":2,
+          "id":13,
+          "question":"What is the largest lake in Africa?"
+        },
+        {
+          "answer":"The Palace of Versailles",
+          "category":"3",
+          "difficulty":3,
+          "id":14,
+          "question":"In which royal palace would you find the Hall of Mirrors?"
+        }
+      ],
+      "success":true,
+      "total_questions":19
+    }
+    
+
+
+* **POST /questions**
+  * General:
+    * Create a new question using the submitted question, answer, difficulty and category. Returns the ID of the created question, success value, total questions, and question list based on current page number to update the frontend.
+  * curl -X POST -H "Content-Type:application/json" -H "Accept:application/json" -d "{\"question\":\"Which organ is for smelling?\", \"answer\":\"The Nose\", \"difficulty\":\"1\", \"category\":\"2\"}" http://127.0.0.1:5000/questions
+
+
+
+{
+  "created":24,
+  "success":true
+}
+
+
+
+* **DELETE /questions/{question_id}**
+  * General:
+    * Deletes the question of the given ID if it exists. Return the ID of the deleted question, success value and total number of questions.
+
+  * curl -X DELETE http://127.0.0.1:5000/questions/8
+
+{
+  "deleted":8,
+  "success":true,
+  "total_questions":19
+  }
+
+
+* **POST /questions/search**
+  * General:
+    * Returns questions based on a search term. It should return any questions for whom the search term is a substring of the question.
+
+    * Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
+
+  * curl  -X POST -H "Content-Type: application/json" -d '{"search":"is"}' http://127.0.0.1:5000/questions/search
+
+{
+  "questions":
+  [
+    {
+      "answer":"Apollo 13",
+      "category":"5",
+      "difficulty":4,
+      "id":2,
+      "question":"What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    },
+    {
+      "answer":"Tom Cruise",
+      "category":"5",
+      "difficulty":4,
+      "id":4,
+      "question":"What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    },
+    {
+      "answer":"Maya Angelou",
+      "category":"4",
+      "difficulty":2,
+      "id":5,
+      "question":"Whose autobiography is entitled \"I Know Why the Caged Bird Sings\"?"
+    },
+    {
+      "answer":"Muhammad Ali",
+      "category":"4",
+      "difficulty":1,
+      "id":6,
+      "question":"What boxers original name is Cassius Clay?"
+    },
+    {
+      "answer":"Brazil",
+      "category":"6",
+      "difficulty":3,
+      "id":10,
+      "question":"Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer":"Lake Victoria",
+      "category":"3",
+      "difficulty":2,
+      "id":13,
+      "question":"What is the largest lake in Africa?"
+    },
+    {
+      "answer":"Agra",
+      "category":"3",
+      "difficulty":2,
+      "id":15,
+      "question":"The Taj Mahal is located in which Indian city?"
+    },
+    {
+      "answer":"Escher",
+      "category":"2",
+      "difficulty":1,
+      "id":16,
+      "question":"Which Dutch graphic artist-initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer":"Mona Lisa",
+      "category":"2",
+      "difficulty":3,
+      "id":17,
+      "question":"La Giaconda is better known as what?"
+    },
+    {
+      "answer":"One",
+      "category":"2",
+      "difficulty":4,
+      "id":18,
+      "question":"How many paintings did Van Gogh sell in his lifetime?"
+    }
+  ],
+  "success":true,
+  "total_questions":14
+}
+
+* **GET /categories/{category_id}/questions**
+  * General:
+    * Returns a list of questions based on the given category ID. Returns the ID of the current category, success value, total questions, and question list.
+
+  * curl http://127.0.0.1:5000/categories/1/questions
+
+  {
+    "current_category":1,
+    "questions":
+    [
+      {
+        "answer":"The Liver",
+        "category":"1",
+        "difficulty":4,
+        "id":20,
+        "question":"What is the heaviest organ in the human body?"
+      },
+      {
+        "answer":"Alexander Fleming",
+        "category":"1",
+        "difficulty":3,
+        "id":21,
+        "question":"Who discovered penicillin?"
+      },
+      {
+        "answer":"Blood",
+        "category":"1",
+        "difficulty":4,
+        "id":22,
+        "question":"Hematology is a branch of medicine involving the study of what?"
+      }
+    ],
+    "success":true,
+    "total_questions":3
+  }
+
+
+
+* **POST /quizzes**
+  * General:
+    * Returns random questions within the given category to play the quiz. Returns a random question and success value.
+
+    * This endpoint should take category and previous question parameters.
+
+  * curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "Sports", "id": "6"}}'  http://127.0.0.1:5000/quizzes
+
+  {
+    "question":
+    {
+      "answer":"Brazil",
+      "category":"6",
+      "difficulty":3,
+      "id":10,
+      "question":"Which is the only team to play in every soccer World Cup tournament?"
+    },
+    "success":true
+  }
